@@ -16,6 +16,43 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from django.conf.urls import url, include
+from rest_framework import routers
+from rest_framework_jwt.views import (
+    obtain_jwt_token,
+    refresh_jwt_token
+)
+
+from usuarios.views import UsuarioViewSet
+from clientes.views import ClienteViewSet
+from compras.views import CompraViewSet
+from empleados.views import EmpleadoViewSet
+from facturas.views import FacturaViewSet
+from listas.views import ListaViewSet
+from ofertas.views import OfertaViewSet
+from pedidos.views import PedidoViewSet
+from productos.views import ProductoViewSet
+from tiendas.views import TiendaViewSet
+from valoraciones.views import ValoracionViewSet
+
+router = routers.DefaultRouter()
+
+router.register(r'usuarios', UsuarioViewSet)
+router.register(r'clientes', ClienteViewSet)
+router.register(r'compras', CompraViewSet)
+router.register(r'empleados', EmpleadoViewSet)
+router.register(r'facturas', FacturaViewSet)
+router.register(r'listas', ListaViewSet)
+router.register(r'ofertas', OfertaViewSet)
+router.register(r'pedidos', PedidoViewSet)
+router.register(r'productos', ProductoViewSet)
+router.register(r'tiendas', TiendaViewSet)
+router.register(r'valoraciones', ValoracionViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^api/v1/', include(router.urls)),
+    url(r'^api/v1/token-auth/', obtain_jwt_token),
+    url(r'^api/v1/token-refresh/', refresh_jwt_token),
 ]
