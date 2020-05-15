@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from permissions.services import APIPermissionClassFactory
+from permisos.services import APIPermissionClassFactory
 from usuarios.models import Usuario
 from usuarios.serializers import UsuarioSerializer
 
@@ -21,7 +21,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    'retrieve': 'usuarios.change_usuario',
+                    'retrieve': 'usuarios.view_usuario',
                     'partial_update': 'usuarios.change_usuario',
                 }
             }
