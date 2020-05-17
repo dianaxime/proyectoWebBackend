@@ -34,3 +34,23 @@ class ListaViewSet(viewsets.ModelViewSet):
         assign_perm('listas.change_usuario', user, lista)
         assign_perm('listas.view_usuario', user, lista)
         return Response(serializer.data)
+
+    @action(detail=True, url_path='aumentar-producto', methods=['post'])
+    def aumentar_producto(self, request, pk=None):
+        lista = self.get_object()
+        self.producto_aumentar(lista)
+        return Response(ListaSerializer(lista).data)
+
+    def producto_aumentar(self, lista):
+        lista.cantidadLista += 1
+        lista.save()
+
+    @action(detail=True, url_path='aumentar-producto', methods=['post'])
+    def disminuir_producto(self, request, pk=None):
+        lista = self.get_object()
+        self.producto_disminuir(lista)
+        return Response(ListaSerializer(lista).data)
+
+    def producto_disminuir(self, compra):
+        lista.cantidadLista -= 1
+        lista.save()

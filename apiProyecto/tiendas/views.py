@@ -21,8 +21,11 @@ class TiendaViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    'retrieve': 'tiendas.change_tienda',
-                    'partial_update': 'tiendas.change_tienda',
+                    # 'retrieve': 'tiendas.change_tienda',
+                    # 'partial_update': 'tiendas.change_tienda',
+                    'retrieve': lambda user, obj, req: user.is_authenticated,
+                    'partial_update': lambda user, obj, req: user.is_authenticated,
+                    'modificar_tienda': lambda user, obj, req: user.is_authenticated,
                 }
             }
         ),
@@ -34,3 +37,12 @@ class TiendaViewSet(viewsets.ModelViewSet):
         assign_perm('tiendas.change_tienda', user, tienda)
         assign_perm('tiendas.view_tienda', user, tienda)
         return Response(serializer.data)
+    
+    @action(detail=True, url_path='modificar-tienda', methods=['patch'])
+    def modificar_tienda(self, request, pk=None):
+        tienda = self.get_object()
+        tienda.ubicacionTienda = request.data.get('direccion')
+        tienda.telefonoTienda = request.data.get('telefono')
+        tienda.faxTienda = request.data.get('fax')
+        tienda.save()
+        return Response(TiendaSerializer(tienda).data)

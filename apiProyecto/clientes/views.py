@@ -10,6 +10,9 @@ from permisos.services import APIPermissionClassFactory
 from clientes.models import Cliente
 from clientes.serializers import ClienteSerializer
 
+def evaluar(user, obj, request):
+    return user.id == obj.cliente.idUsuario
+
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
@@ -21,8 +24,12 @@ class ClienteViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    'retrieve': 'clientes.view_cliente',
-                    'partial_update': 'clientes.change_cliente',
+                    # 'retrieve': 'clientes.view_cliente',
+                    # 'partial_update': 'clientes.change_cliente',
+                    'retrieve': evaluar,
+                    'partial_update': evaluar,
+                    'modificar_direccion': evaluar,
+                    'modificar_telefono': evaluar,
                 }
             }
         ),
@@ -34,3 +41,11 @@ class ClienteViewSet(viewsets.ModelViewSet):
         assign_perm('clientes.change_cliente', user, cliente)
         assign_perm('clientes.view_cliente', user, cliente)
         return Response(serializer.data)
+
+    @action(detail=True, url_path='modificar-cliente', methods=['patch'])
+    def modificar_direccion(self, request, pk=None):
+        cliente = self.get_object()
+        cliente.direccionCliente = request.data.get('direccion')
+        cliente.telefonoCliente = request.data.get('telefono')
+        cliente.save()
+        return Response(ClienteSerializer(cliente).data)

@@ -10,6 +10,7 @@ class ClienteSerializer(serializers.ModelSerializer):
             'id',
             'nombreCliente',
             'telefonoCliente',
+            'direccionCliente',
             'nitCliente',
             'idUsuario'
         )

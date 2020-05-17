@@ -34,3 +34,5 @@ class FacturaViewSet(viewsets.ModelViewSet):
         assign_perm('facturas.change_factura', user, factura)
         assign_perm('facturas.view_factura', user, factura)
         return Response(serializer.data)
+    
+

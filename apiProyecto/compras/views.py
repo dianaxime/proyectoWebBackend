@@ -21,8 +21,8 @@ class CompraViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    'retrieve': 'compras.change_compra',
-                    'partial_update': 'compras.change_compra',
+                    #'retrieve': 'compras.change_compra',
+                    #'partial_update': 'compras.change_compra',
                 }
             }
         ),
@@ -34,3 +34,30 @@ class CompraViewSet(viewsets.ModelViewSet):
         assign_perm('compras.change_compra', user, compra)
         assign_perm('compras.view_compra', user, compra)
         return Response(serializer.data)
+    
+    @action(detail=True, url_path='aumentar-producto', methods=['post'])
+    def aumentar_producto(self, request, pk=None):
+        compra = self.get_object()
+        self.producto_aumentar(compra)
+        return Response(CompraSerializer(compra).data)
+
+    def producto_aumentar(self, compra):
+        compra.cantidadCompra += 1
+        compra.save()
+
+    @action(detail=True, url_path='aumentar-producto', methods=['post'])
+    def disminuir_producto(self, request, pk=None):
+        compra = self.get_object()
+        self.producto_disminuir(compra)
+        return Response(CompraSerializer(compra).data)
+
+    def producto_disminuir(self, compra):
+        compra.cantidadCompra -= 1
+        compra.save()
+
+    @action(detail=True, url_path='expirado', methods=['post'])
+    def disminuir_producto(self, request, pk=None):
+        compra = self.get_object()
+        compra.estadoCompra = 'expirado'
+        compra.save()
+        return Response(CompraSerializer(compra).data)    

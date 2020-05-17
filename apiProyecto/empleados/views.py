@@ -21,8 +21,11 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    'retrieve': 'empleados.change_empleado',
-                    'partial_update': 'empleados.change_empleado',
+                    # 'retrieve': 'empleados.change_empleado',
+                    # 'partial_update': 'empleados.change_empleado',
+                    'retrieve': evaluar,
+                    'partial_update': evaluar,
+                    'modificar_empleado': evaluar,
                 }
             }
         ),
@@ -34,3 +37,13 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
         assign_perm('empleados.change_empleado', user, empleado)
         assign_perm('empleados.view_empleado', user, empleado)
         return Response(serializer.data)
+    
+    @action(detail=True, url_path='modificar-empleado', methods=['patch'])
+    def modificar_empleado(self, request, pk=None):
+        empleado = self.get_object()
+        empleado.direccionEmpleado = request.data.get('direccion')
+        empleado.telefonoEmpleado = request.data.get('telefono')
+        empleado.puestoEmpleado = request.data.get('puesto')
+        empleado.save()
+        return Response(EmpleadoSerializer(empleado).data)
+
