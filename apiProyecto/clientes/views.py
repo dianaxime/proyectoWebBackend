@@ -9,6 +9,12 @@ from rest_framework.response import Response
 from permisos.services import APIPermissionClassFactory
 from clientes.models import Cliente
 from clientes.serializers import ClienteSerializer
+from pedidos.models import Pedido
+from pedidos.serializers import PedidoSerializer
+from compras.models import Compra
+from compras.serializers import CompraSerializer
+from facturas.models import Factura
+from facturas.serializers import FacturaSerializer
 
 def evaluar(user, obj, request):
     return user.id == obj.cliente.idUsuario
@@ -49,3 +55,18 @@ class ClienteViewSet(viewsets.ModelViewSet):
         cliente.telefonoCliente = request.data.get('telefono')
         cliente.save()
         return Response(ClienteSerializer(cliente).data)
+
+    @action(detail=True, url_path="mis-pedidos", methods=['get'])
+    def mis_pedidos(self, request, pk=None):
+        cliente = self.get_object()
+        return Response([PedidoSerializer(pedido).data for pedido in Pedido.objects.filter(idCliente=cliente)])
+
+    @action(detail=True, url_path="mis-compras", methods=['get'])
+    def mis_compras(self, request, pk=None):
+        cliente = self.get_object()
+        return Response([CompraSerializer(compra).data for compra in Compra.objects.filter(idCliente=cliente)])
+
+    @action(detail=True, url_path="mis-facturas", methods=['get'])
+    def mis_facturas(self, request, pk=None):
+        factura = self.get_object()
+        return Response([FacturaSerializer(factura).data for factura in Factura.objects.filter(idCliente=cliente)])

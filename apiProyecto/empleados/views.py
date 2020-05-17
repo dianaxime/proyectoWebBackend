@@ -9,9 +9,12 @@ from rest_framework.response import Response
 from permisos.services import APIPermissionClassFactory
 from empleados.models import Empleado
 from empleados.serializers import EmpleadoSerializer
+from valoraciones.models import Valoracion
+from valoraciones.serializers import ValoracionSerializer
+from django.db.models import Avg
 
 def evaluar(user, obj, request):
-    return user.id == obj.cliente.idUsuario
+    return user.id == obj.empleado.idUsuario
 
 class EmpleadoViewSet(viewsets.ModelViewSet):
     queryset = Empleado.objects.all()
@@ -49,4 +52,15 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
         empleado.puestoEmpleado = request.data.get('puesto')
         empleado.save()
         return Response(EmpleadoSerializer(empleado).data)
+
+    @action(detail=True, url_path="mis-comentarios", methods=['get'])
+    def mis_comentarios(self, request, pk=None):
+        empleado = self.get_object()
+        return Response([ValoracionSerializer(valoracion).data for valoracion in Valoracion.objects.filter(idEmpleado=empleado)])
+
+    @action(detail=True, url_path="mi-puntuacion", methods=['get'])
+    def mi_puntuacion(self, request, pk=None):
+        empleado = self.get_object()
+        puntuacion = Valoracion.objects.filter(idEmpleado=empleado).aggregate(Avg(puntuacionValoracion))
+        return Response({'puntuacion': puntuacion})
 
