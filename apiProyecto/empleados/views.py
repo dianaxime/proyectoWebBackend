@@ -10,6 +10,9 @@ from permisos.services import APIPermissionClassFactory
 from empleados.models import Empleado
 from empleados.serializers import EmpleadoSerializer
 
+def evaluar(user, obj, request):
+    return user.id == obj.cliente.idUsuario
+
 class EmpleadoViewSet(viewsets.ModelViewSet):
     queryset = Empleado.objects.all()
     serializer_class = EmpleadoSerializer

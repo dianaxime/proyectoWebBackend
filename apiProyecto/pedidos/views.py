@@ -34,3 +34,17 @@ class PedidoViewSet(viewsets.ModelViewSet):
         assign_perm('pedidos.change_pedido', user, pedido)
         assign_perm('pedidos.view_pedido', user, pedido)
         return Response(serializer.data)
+    
+    @action(detail=True, url_path='entregado', methods=['post'])
+    def entregar(self, request, pk=None):
+        pedido = self.get_object()
+        pedido.estadoPedido = 'entregado'
+        pedido.save()
+        return Response(PedidoSerializer(pedido).data)
+
+    @action(detail=True, url_path='cancelado', methods=['post'])
+    def cancelar(self, request, pk=None):
+        pedido = self.get_object()
+        pedido.entregaPedido = 'cancelado'
+        pedido.save()
+        return Response(PedidoSerializer(pedido).data)    

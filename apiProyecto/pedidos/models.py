@@ -25,6 +25,12 @@ class Pedido(models.Model):
         null = False,
         blank = False
     )
+    idCliente = models.ForeignKey(
+        'clientes.Cliente',
+        on_delete = models.CASCADE,
+        null = True,
+        blank = True
+    )
 
     def __str__(self):
         return self.estadoPedido

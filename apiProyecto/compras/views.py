@@ -56,7 +56,7 @@ class CompraViewSet(viewsets.ModelViewSet):
         compra.save()
 
     @action(detail=True, url_path='expirado', methods=['post'])
-    def disminuir_producto(self, request, pk=None):
+    def expirar(self, request, pk=None):
         compra = self.get_object()
         compra.estadoCompra = 'expirado'
         compra.save()

@@ -4,6 +4,7 @@ from pedidos.models import Pedido
 from productos.serializers import ProductoSerializer
 from empleados.serializers import EmpleadoSerializer
 from compras.serializers import CompraSerializer
+from clientes.serializers import ClienteSerializer
 
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,5 +18,6 @@ class PedidoSerializer(serializers.ModelSerializer):
             'recogerPedido',
             'idCompras',
             'idProducto',
-            'idEmpleado'
+            'idEmpleado',
+            'idCliente'
         )
