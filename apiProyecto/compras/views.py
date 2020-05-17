@@ -10,7 +10,7 @@ from permisos.services import APIPermissionClassFactory
 from compras.models import Compra
 from compras.serializers import CompraSerializer
 
-class UsuarioViewSet(viewsets.ModelViewSet):
+class CompraViewSet(viewsets.ModelViewSet):
     queryset = Compra.objects.all()
     serializer_class = CompraSerializer
     permission_classes = (

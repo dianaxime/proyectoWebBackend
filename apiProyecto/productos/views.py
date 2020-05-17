@@ -21,7 +21,8 @@ class ProductoViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    'retrieve': 'productos.change_producto',
+                    #'retrieve': 'productos.view_producto',
+                    'retrieve': True,
                     'partial_update': 'productos.change_producto',
                 }
             }
