@@ -21,8 +21,11 @@ class ListaViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    'retrieve': 'listas.change_lista',
-                    'partial_update': 'listas.change_lista',
+                    #'retrieve': 'listas.change_lista',
+                    #'partial_update': 'listas.change_lista',
+                    'aumentar_producto': lambda user, obj, req: user.is_authenticated,
+                    'disminuir_producto': lambda user, obj, req: user.is_authenticated,
+                    'obtener_listas': lambda user, obj, req: user.is_authenticated,
                 }
             }
         ),
@@ -38,19 +41,20 @@ class ListaViewSet(viewsets.ModelViewSet):
     @action(detail=True, url_path='aumentar-producto', methods=['post'])
     def aumentar_producto(self, request, pk=None):
         lista = self.get_object()
-        self.producto_aumentar(lista)
-        return Response(ListaSerializer(lista).data)
-
-    def producto_aumentar(self, lista):
-        lista.cantidadLista += 1
+        cantidad = request.data.get('cantidad')
+        lista.cantidadLista += cantidad
         lista.save()
+        return Response(ListaSerializer(lista).data)
 
     @action(detail=True, url_path='aumentar-producto', methods=['post'])
     def disminuir_producto(self, request, pk=None):
         lista = self.get_object()
-        self.producto_disminuir(lista)
-        return Response(ListaSerializer(lista).data)
-
-    def producto_disminuir(self, compra):
-        lista.cantidadLista -= 1
+        cantidad = request.data.get('cantidad')
+        lista.cantidadLista -= cantidad
         lista.save()
+        return Response(ListaSerializer(lista).data)
+    
+    @action(detail=True, url_path='obtener-listas', methods=['post'])
+    def obtener_listas(self, request, pk=None):
+        return Response(ListaSerializer(lista).data for lista in Lista.objects.filter(esHoy=True))
+

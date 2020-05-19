@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from permisos.services import APIPermissionClassFactory
 from productos.models import Producto
 from productos.serializers import ProductoSerializer
+from ofertas.models import Oferta
+from ofertas.serializers import OfertaSerializer
 
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
@@ -22,8 +24,9 @@ class ProductoViewSet(viewsets.ModelViewSet):
                 },
                 'instance': {
                     #'retrieve': 'productos.view_producto',
-                    'retrieve': True,
-                    'partial_update': 'productos.change_producto',
+                    'retrieve': lambda user, obj, req: user.is_authenticated,,
+                    #'partial_update': 'productos.change_producto',
+                    'aplicar': lambda user, obj, req: user.is_authenticated,
                 }
             }
         ),
@@ -35,3 +38,17 @@ class ProductoViewSet(viewsets.ModelViewSet):
         assign_perm('productos.change_producto', user, producto)
         assign_perm('productos.view_producto', user, producto)
         return Response(serializer.data)
+
+    @action(detail=True, url_path='aplicar-descuento', methods=['post'])
+    def aplicar(self, request, pk=None):
+        productos = Producto.objects.all()
+        productosDescuento = []
+        for producto in productos:
+            ofertas = Oferta.objects.filter(idProducto=producto).filter(vencida=False)
+            if ofertas.count() > 0:
+                producto.descuentoProducto = ofertas.descuentoOferta * producto.precioProducto
+            else:
+                producto.descuentoProducto = 0
+            producto.save()
+            productosDescuento.append(ProductoSerializar(producto).data)
+        return Response(productosDescuento)    

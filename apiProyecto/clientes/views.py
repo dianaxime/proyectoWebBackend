@@ -17,7 +17,7 @@ from facturas.models import Factura
 from facturas.serializers import FacturaSerializer
 
 def evaluar(user, obj, request):
-    return user.id == obj.cliente.idUsuario
+    return user.id == obj.idUsuario
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
@@ -34,8 +34,10 @@ class ClienteViewSet(viewsets.ModelViewSet):
                     # 'partial_update': 'clientes.change_cliente',
                     'retrieve': evaluar,
                     'partial_update': evaluar,
-                    'modificar_direccion': evaluar,
-                    'modificar_telefono': evaluar,
+                    'modificar_cliente': evaluar,
+                    'mis_pedidos': evaluar,
+                    'mis_compras': evaluar,
+                    'mis_facturas': evaluar,
                 }
             }
         ),
@@ -49,7 +51,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, url_path='modificar-cliente', methods=['patch'])
-    def modificar_direccion(self, request, pk=None):
+    def modificar_cliente(self, request, pk=None):
         cliente = self.get_object()
         cliente.direccionCliente = request.data.get('direccion')
         cliente.telefonoCliente = request.data.get('telefono')
@@ -64,7 +66,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
     @action(detail=True, url_path="mis-compras", methods=['get'])
     def mis_compras(self, request, pk=None):
         cliente = self.get_object()
-        return Response([CompraSerializer(compra).data for compra in Compra.objects.filter(idCliente=cliente)])
+        return Response([CompraSerializer(compra).data for compra in Compra.objects.filter(idCliente=cliente).filter(estadoCompra='activo')])
 
     @action(detail=True, url_path="mis-facturas", methods=['get'])
     def mis_facturas(self, request, pk=None):

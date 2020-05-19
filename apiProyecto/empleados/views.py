@@ -14,7 +14,7 @@ from valoraciones.serializers import ValoracionSerializer
 from django.db.models import Avg
 
 def evaluar(user, obj, request):
-    return user.id == obj.empleado.idUsuario
+    return user.id == obj.idUsuario
 
 class EmpleadoViewSet(viewsets.ModelViewSet):
     queryset = Empleado.objects.all()
@@ -32,6 +32,9 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
                     'retrieve': evaluar,
                     'partial_update': evaluar,
                     'modificar_empleado': evaluar,
+                    'mis_comentarios': evaluar,
+                    'mi_puntuacion': evaluar,
+                    'mis_pedidos': evaluar,
                 }
             }
         ),
@@ -63,4 +66,9 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
         empleado = self.get_object()
         puntuacion = Valoracion.objects.filter(idEmpleado=empleado).aggregate(Avg(puntuacionValoracion))
         return Response({'puntuacion': puntuacion})
+    
+    @action(detail=True, url_path="mis-pedidos", methods=['get'])
+    def mis_pedidos(self, request, pk=None):
+        empleado = self.get_object()
+        return Response([PedidoSerializer(pedido).data for pedido in Pedido.objects.filter(idEmpleado=empleado).filter(estadoPedido='pendiente')])
 
