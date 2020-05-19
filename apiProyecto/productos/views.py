@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from datetime import date
 
 # Create your views here.
 from guardian.shortcuts import assign_perm
@@ -41,16 +42,17 @@ class ProductoViewSet(viewsets.ModelViewSet):
         user.save()
         return Response(serializer.data)
 
-    @action(detail=True, url_path='aplicar-descuento', methods=['post'])
+    @action(detail=False, url_path='aplicar-descuento', methods=['patch'])
     def aplicar(self, request, pk=None):
         productos = Producto.objects.all()
         productosDescuento = []
         for producto in productos:
-            ofertas = Oferta.objects.filter(idProducto=producto).filter(vencida=False)
+            ofertas = Oferta.objects.all().filter(idProducto=producto).filter(venceOferta__gte=date.today())
             if ofertas.count() > 0:
-                producto.descuentoProducto = ofertas.descuentoOferta * producto.precioProducto
+                for oferta in ofertas:
+                    producto.descuentoProducto = oferta.descuentoOferta * producto.precioProducto
             else:
                 producto.descuentoProducto = 0
             producto.save()
-            productosDescuento.append(ProductoSerializar(producto).data)
+            productosDescuento.append(ProductoSerializer(producto).data)
         return Response(productosDescuento)    

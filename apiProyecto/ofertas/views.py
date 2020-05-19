@@ -19,9 +19,10 @@ class OfertaViewSet(viewsets.ModelViewSet):
             permission_configuration={
                 'base': {
                     'create': True,
+                    'list': lambda user, req: user.is_authenticated,
                 },
                 'instance': {
-                    'retrieve': 'ofertas.change_oferta',
+                    'retrieve': 'ofertas.view_oferta',
                     'partial_update': 'ofertas.change_oferta',
                 }
             }
@@ -33,4 +34,5 @@ class OfertaViewSet(viewsets.ModelViewSet):
         user = self.request.user
         assign_perm('ofertas.change_oferta', user, oferta)
         assign_perm('ofertas.view_oferta', user, oferta)
+        user.save()
         return Response(serializer.data)

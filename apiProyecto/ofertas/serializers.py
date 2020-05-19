@@ -19,7 +19,7 @@ class OfertaSerializer(serializers.ModelSerializer):
         )
     
     def get_vencida(self, obj):
-        dia = obj.date
+        dia = obj.venceOferta
         hoy = date.today()
         resultado = (dia - hoy).days
-        return r < 0
+        return resultado < 0

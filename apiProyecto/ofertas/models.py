@@ -4,7 +4,7 @@ from django.db import models
 class Oferta(models.Model):
     descripcionOferta = models.CharField(max_length = 100, null = False, blank = False)
     descuentoOferta = models.FloatField(null = False, blank = False)
-    venceOferta = models.DateTimeField(auto_now = False)
+    venceOferta = models.DateField()
     idProducto = models.ForeignKey(
         'productos.Producto',
         on_delete = models.CASCADE,
@@ -13,4 +13,4 @@ class Oferta(models.Model):
     )
 
     def __str__(self):
-        return self.nombreTienda
+        return str(self.descuentoOferta)
