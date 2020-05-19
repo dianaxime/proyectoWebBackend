@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Lista(models.Model):
-    fechaLista = models.DateTimeField(auto_now = True)
+    fechaLista = models.DateField()
     cantidadLista = models.IntegerField(null = False, blank = False)
     turnoLista = models.CharField(max_length = 30)
     idProducto = models.ForeignKey(

@@ -21,11 +21,12 @@ class ProductoViewSet(viewsets.ModelViewSet):
             permission_configuration={
                 'base': {
                     'create': True,
+                    'list': lambda user, req: user.is_authenticated,
                 },
                 'instance': {
-                    #'retrieve': 'productos.view_producto',
-                    'retrieve': lambda user, obj, req: user.is_authenticated,,
-                    #'partial_update': 'productos.change_producto',
+                    'retrieve': 'productos.view_producto',
+                    #'retrieve': lambda user, obj, req: user.is_authenticated,
+                    'partial_update': 'productos.change_producto',
                     'aplicar': lambda user, obj, req: user.is_authenticated,
                 }
             }
@@ -37,6 +38,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
         user = self.request.user
         assign_perm('productos.change_producto', user, producto)
         assign_perm('productos.view_producto', user, producto)
+        user.save()
         return Response(serializer.data)
 
     @action(detail=True, url_path='aplicar-descuento', methods=['post'])

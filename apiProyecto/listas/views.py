@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from datetime import date
 
 # Create your views here.
 from guardian.shortcuts import assign_perm
@@ -19,10 +20,12 @@ class ListaViewSet(viewsets.ModelViewSet):
             permission_configuration={
                 'base': {
                     'create': True,
+                    'list': True,
                 },
                 'instance': {
-                    #'retrieve': 'listas.change_lista',
-                    #'partial_update': 'listas.change_lista',
+                    'retrieve': 'listas.view_lista',
+                    #'retrieve': True,
+                    'partial_update': 'listas.change_lista',
                     'aumentar_producto': lambda user, obj, req: user.is_authenticated,
                     'disminuir_producto': lambda user, obj, req: user.is_authenticated,
                     'obtener_listas': lambda user, obj, req: user.is_authenticated,
@@ -34,27 +37,28 @@ class ListaViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         lista = serializer.save()
         user = self.request.user
-        assign_perm('listas.change_usuario', user, lista)
-        assign_perm('listas.view_usuario', user, lista)
+        assign_perm('listas.change_lista', user, lista)
+        assign_perm('listas.view_lista', user, lista)
+        user.save()
         return Response(serializer.data)
 
-    @action(detail=True, url_path='aumentar-producto', methods=['post'])
+    @action(detail=True, url_path='aumentar-producto', methods=['patch'])
     def aumentar_producto(self, request, pk=None):
         lista = self.get_object()
-        cantidad = request.data.get('cantidad')
+        cantidad = int(request.data.get('cantidad'))
         lista.cantidadLista += cantidad
         lista.save()
         return Response(ListaSerializer(lista).data)
 
-    @action(detail=True, url_path='aumentar-producto', methods=['post'])
+    @action(detail=True, url_path='disminuir-producto', methods=['patch'])
     def disminuir_producto(self, request, pk=None):
         lista = self.get_object()
-        cantidad = request.data.get('cantidad')
+        cantidad = int(request.data.get('cantidad'))
         lista.cantidadLista -= cantidad
         lista.save()
         return Response(ListaSerializer(lista).data)
     
-    @action(detail=True, url_path='obtener-listas', methods=['post'])
+    @action(detail=False, url_path='obtener-listas', methods=['get'])
     def obtener_listas(self, request, pk=None):
-        return Response(ListaSerializer(lista).data for lista in Lista.objects.filter(esHoy=True))
+        return Response(ListaSerializer(lista).data for lista in Lista.objects.filter(fechaLista=date.today()))
 

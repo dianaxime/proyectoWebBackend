@@ -21,7 +21,7 @@ class ListaSerializer(serializers.ModelSerializer):
         )
     
     def get_esHoy(self, obj):
-        dia = obj.date
+        dia = obj.fechaLista
         hoy = date.today()
         resultado = (dia - hoy).days
-        return r == 0
+        return resultado == 0
