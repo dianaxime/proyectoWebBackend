@@ -45,6 +45,7 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
         user = self.request.user
         assign_perm('empleados.change_empleado', user, empleado)
         assign_perm('empleados.view_empleado', user, empleado)
+        user.save()
         return Response(serializer.data)
     
     @action(detail=True, url_path='modificar-empleado', methods=['patch'])

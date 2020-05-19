@@ -24,8 +24,8 @@ class CompraViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    #'retrieve': 'compras.change_compra',
-                    #'partial_update': 'compras.change_compra',
+                    'retrieve': 'compras.view_compra',
+                    'partial_update': 'compras.change_compra',
                     'completar': evaluar,
                     'expirar': evaluar,
                     'total': evaluar,
@@ -39,6 +39,7 @@ class CompraViewSet(viewsets.ModelViewSet):
         user = self.request.user
         assign_perm('compras.change_compra', user, compra)
         assign_perm('compras.view_compra', user, compra)
+        user.save()
         return Response(serializer.data)
 
     @action(detail=True, url_path='completado', methods=['post'])

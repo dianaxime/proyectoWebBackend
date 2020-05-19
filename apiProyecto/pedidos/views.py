@@ -25,7 +25,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    #'retrieve': 'pedidos.change_pedido',
+                    'retrieve': 'pedidos.view_pedido',
                     #'partial_update': 'pedidos.change_pedido',
                     'entregar': evaluar,
                     'cancelar': evaluar,
@@ -39,6 +39,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
         user = self.request.user
         assign_perm('pedidos.change_pedido', user, pedido)
         assign_perm('pedidos.view_pedido', user, pedido)
+        user.save()
         return Response(serializer.data)
 
     @action(detail=True, url_path='entregado', methods=['post'])

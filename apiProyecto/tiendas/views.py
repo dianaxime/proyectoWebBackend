@@ -36,6 +36,7 @@ class TiendaViewSet(viewsets.ModelViewSet):
         user = self.request.user
         assign_perm('tiendas.change_tienda', user, tienda)
         assign_perm('tiendas.view_tienda', user, tienda)
+        user.save()
         return Response(serializer.data)
     
     @action(detail=True, url_path='modificar-tienda', methods=['patch'])

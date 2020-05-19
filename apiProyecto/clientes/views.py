@@ -17,7 +17,7 @@ from facturas.models import Factura
 from facturas.serializers import FacturaSerializer
 
 def evaluar(user, obj, request):
-    return user.id == obj.idUsuario
+    return user.id == obj.idUsuario.id
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
@@ -30,9 +30,9 @@ class ClienteViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    # 'retrieve': 'clientes.view_cliente',
+                    'retrieve': 'clientes.view_cliente',
                     # 'partial_update': 'clientes.change_cliente',
-                    'retrieve': evaluar,
+                    #'retrieve': evaluar,
                     'partial_update': evaluar,
                     'modificar_cliente': evaluar,
                     'mis_pedidos': evaluar,
@@ -48,13 +48,14 @@ class ClienteViewSet(viewsets.ModelViewSet):
         user = self.request.user
         assign_perm('clientes.change_cliente', user, cliente)
         assign_perm('clientes.view_cliente', user, cliente)
+        user.save()
         return Response(serializer.data)
 
     @action(detail=True, url_path='modificar-cliente', methods=['patch'])
     def modificar_cliente(self, request, pk=None):
         cliente = self.get_object()
-        cliente.direccionCliente = request.data.get('direccion')
-        cliente.telefonoCliente = request.data.get('telefono')
+        cliente.direccionCliente = request.data.get('direccionCliente')
+        cliente.telefonoCliente = request.data.get('telefonoCliente')
         cliente.save()
         return Response(ClienteSerializer(cliente).data)
 
