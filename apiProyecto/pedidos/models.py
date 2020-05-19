@@ -7,12 +7,6 @@ class Pedido(models.Model):
     pagoPedido = models.CharField(max_length = 30, null = False, blank = False)
     entregaPedido = models.CharField(max_length = 30, null = False, blank = False)
     recogerPedido = models.CharField(max_length = 30, null = False, blank = False)
-    idCompras = models.ForeignKey(
-        'compras.Compra',
-        on_delete = models.CASCADE,
-        null = False,
-        blank = False
-    )
     idFactura = models.ForeignKey(
         'facturas.Factura',
         on_delete = models.CASCADE,
