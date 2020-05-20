@@ -18,7 +18,7 @@ class RegistroViewSet(viewsets.ModelViewSet):
     serializer_class = RegistroSerializer
     permission_classes = (
         APIPermissionClassFactory(
-            name='CompraPermission',
+            name='RegistroPermission',
             permission_configuration={
                 'base': {
                     'create': True,

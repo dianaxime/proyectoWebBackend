@@ -16,8 +16,7 @@ class PedidoSerializer(serializers.ModelSerializer):
             'pagoPedido',
             'entregaPedido',
             'recogerPedido',
-            'idCompras',
-            'idProducto',
             'idEmpleado',
-            'idCliente'
+            'idCliente',
+            'idFactura'
         )

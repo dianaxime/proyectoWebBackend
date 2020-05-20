@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Factura(models.Model):
-    fechaFactura = models.DateTimeField(auto_now = True)
+    fechaFactura = models.DateTimeField(auto_now_add = True)
     subtotalFactura = models.FloatField(null = False, blank = False)
     ivaFactura = models.FloatField(null = False, blank = False)
     totalFactura = models.FloatField(null = False, blank = False)

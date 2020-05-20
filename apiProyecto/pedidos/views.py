@@ -42,9 +42,9 @@ class PedidoViewSet(viewsets.ModelViewSet):
         user.save()
         return Response(serializer.data)
 
-    @action(detail=True, url_path='entregado', methods=['post'])
+    @action(detail=False, url_path='entregado', methods=['patch'])
     def entregar(self, request, pk=None):
-        cliente = request.data.get('cliente')
+        cliente = request.data.get('idCliente')
         pedidos = Pedido.objects.filter(idCliente=cliente).filter(estadoPedido='pendiente')
         pedidosEntregados = []
         for pedido in pedidos:
@@ -53,9 +53,9 @@ class PedidoViewSet(viewsets.ModelViewSet):
             pedidosEntregados.append(PedidoSerializer(pedido).data)
         return Response(pedidosEntregados) 
 
-    @action(detail=True, url_path='cancelado', methods=['post'])
+    @action(detail=False, url_path='cancelado', methods=['patch'])
     def cancelar(self, request, pk=None):
-        cliente = request.data.get('cliente')
+        cliente = request.data.get('idCliente')
         pedidos = Pedido.objects.filter(idCliente=cliente).filter(entregaPedido='pendiente')
         pedidosCancelados = []
         for pedido in pedidos:

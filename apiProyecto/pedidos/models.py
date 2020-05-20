@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Pedido(models.Model):
-    fechaPedido = models.DateTimeField(auto_now = True)
+    fechaPedido = models.DateTimeField(auto_now_add = True)
     estadoPedido = models.CharField(max_length = 30, null = False, blank = False)
     pagoPedido = models.CharField(max_length = 30, null = False, blank = False)
     entregaPedido = models.CharField(max_length = 30, null = False, blank = False)

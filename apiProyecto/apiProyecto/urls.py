@@ -49,7 +49,7 @@ router.register(r'pedidos', PedidoViewSet)
 router.register(r'productos', ProductoViewSet)
 router.register(r'tiendas', TiendaViewSet)
 router.register(r'valoraciones', ValoracionViewSet)
-router.register(r'registros', ValoracionViewSet)
+router.register(r'registros', RegistroViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

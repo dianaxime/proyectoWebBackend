@@ -11,6 +11,8 @@ from empleados.models import Empleado
 from empleados.serializers import EmpleadoSerializer
 from valoraciones.models import Valoracion
 from valoraciones.serializers import ValoracionSerializer
+from pedidos.models import Pedido
+from pedidos.serializers import PedidoSerializer
 from django.db.models import Avg
 
 def evaluar(user, obj, request):
@@ -27,14 +29,14 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
                     'create': True,
                 },
                 'instance': {
-                    # 'retrieve': 'empleados.change_empleado',
+                    'retrieve': 'empleados.change_empleado',
                     # 'partial_update': 'empleados.change_empleado',
-                    'retrieve': evaluar,
-                    'partial_update': evaluar,
-                    'modificar_empleado': evaluar,
-                    'mis_comentarios': evaluar,
-                    'mi_puntuacion': evaluar,
-                    'mis_pedidos': evaluar,
+                    #'retrieve': lambda user, obj, req: user.is_authenticated,
+                    'partial_update': lambda user, obj, req: user.is_authenticated,
+                    'modificar_empleado': lambda user, obj, req: user.is_authenticated,
+                    'mis_comentarios': lambda user, obj, req: user.is_authenticated,
+                    'mi_puntuacion': lambda user, obj, req: user.is_authenticated,
+                    'mis_pedidos': lambda user, obj, req: user.is_authenticated,
                 }
             }
         ),
@@ -65,8 +67,8 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
     @action(detail=True, url_path="mi-puntuacion", methods=['get'])
     def mi_puntuacion(self, request, pk=None):
         empleado = self.get_object()
-        puntuacion = Valoracion.objects.filter(idEmpleado=empleado).aggregate(Avg(puntuacionValoracion))
-        return Response({'puntuacion': puntuacion})
+        puntuacion = Valoracion.objects.filter(idEmpleado=empleado).aggregate(Avg('puntuacionValoracion'))
+        return Response({'puntuacion': float(puntuacion['puntuacionValoracion__avg'])})
     
     @action(detail=True, url_path="mis-pedidos", methods=['get'])
     def mis_pedidos(self, request, pk=None):
