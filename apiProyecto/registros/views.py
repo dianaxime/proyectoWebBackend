@@ -26,9 +26,6 @@ class RegistroViewSet(viewsets.ModelViewSet):
                 'instance': {
                     'retrieve': 'registros.view_registro',
                     'partial_update': 'registros.change_registro',
-                    'completar': evaluar,
-                    'expirar': evaluar,
-                    'total': evaluar,
                 }
             }
         ),

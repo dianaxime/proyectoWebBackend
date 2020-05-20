@@ -30,6 +30,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
                     'partial_update': 'productos.change_producto',
                     'aplicar': lambda user, obj, req: user.is_authenticated,
                     'subtotal': lambda user, obj, req: user.is_authenticated,
+                    'descontar': lambda user, obj, req: user.is_authenticated,
                 }
             }
         ),
@@ -62,5 +63,12 @@ class ProductoViewSet(viewsets.ModelViewSet):
     def subtotal(self, request, pk=None):
         producto = self.get_object()
         cantidad = int(request.data.get('cantidad'))
-        subtotal = (cantidad*producto.precioProducto) - (cantidad*producto.descuentoProducto)
-        return Response({'subtotal': subtotal})    
+        subtotal = cantidad*producto.precioProducto
+        return Response({'subtotal': subtotal})
+
+    @action(detail=True, url_path='descuento-compra', methods=['get'])
+    def descontar(self, request, pk=None):
+        producto = self.get_object()
+        cantidad = int(request.data.get('cantidad'))
+        descuento = cantidad*producto.descuentoProducto
+        return Response({'descuento': descuento})    

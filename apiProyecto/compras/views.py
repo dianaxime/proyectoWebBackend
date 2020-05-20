@@ -5,6 +5,7 @@ from guardian.shortcuts import assign_perm
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.db.models import Sum
 
 from permisos.services import APIPermissionClassFactory
 from compras.models import Compra
@@ -42,32 +43,37 @@ class CompraViewSet(viewsets.ModelViewSet):
         user.save()
         return Response(serializer.data)
 
-    @action(detail=True, url_path='completado', methods=['post'])
+    @action(detail=False, url_path='completado', methods=['patch'])
     def completar(self, request, pk=None):
-        cliente = request.data.get('cliente')
+        cliente = request.data.get('idCliente')
         compras = Compra.objects.filter(idCliente=cliente).filter(estadoCompra='activo')
         comprasCompletadas = []
         for compra in compras:
             compra.estadoCompra = 'completado'
             compra.save()
-            comprasCompletadas.append(CompraSerializar(compra).data)
+            comprasCompletadas.append(CompraSerializer(compra).data)
         return Response(comprasCompletadas)    
 
-    @action(detail=True, url_path='expirado', methods=['post'])
+    @action(detail=False, url_path='expirado', methods=['patch'])
     def expirar(self, request, pk=None):
-        cliente = request.data.get('cliente')
+        cliente = request.data.get('idCliente')
         compras = Compra.objects.filter(idCliente=cliente).filter(estadoCompra='activo')
         comprasCompletadas = []
         for compra in compras:
             compra.estadoCompra = 'expirado'
             compra.save()
-            comprasCompletadas.append(CompraSerializar(compra).data)
+            comprasCompletadas.append(CompraSerializer(compra).data)
         return Response(comprasCompletadas)    
 
-    @action(detail=True, url_path='total', methods=['get'])
+    @action(detail=False, url_path='total', methods=['get'])
     def total(self, request, pk=None):
-        cliente = request.data.get('cliente')
-        subtotal = Compra.objects.filter(idCliente=cliente).filter(estadoCompra='activo').aggregate(Sum(subtotalCompra))
-        iva = subtotal * 0.12
-        total = subtotal + iva
-        return Response({'subtotal': subtotal, 'iva': iva, 'total': total})
+        cliente = request.data.get('idCliente')
+        subtotal = Compra.objects.filter(idCliente=cliente).filter(estadoCompra='activo').aggregate(Sum('subtotalCompra'))
+        descuento = Compra.objects.filter(idCliente=cliente).filter(estadoCompra='activo').aggregate(Sum('descuentoCompra'))
+        subtotal = float(subtotal['subtotalCompra__sum'])
+        descuento = float(descuento['descuentoCompra__sum'])
+        total = subtotal - descuento
+        iva = total * 0.12
+        totalFinal = total + iva
+        return Response({'subtotal': total, 'iva': iva, 'total': totalFinal})
+        

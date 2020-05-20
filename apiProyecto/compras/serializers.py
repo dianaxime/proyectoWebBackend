@@ -13,6 +13,7 @@ class CompraSerializer(serializers.ModelSerializer):
             'fechaCompra',
             'estadoCompra',
             'subtotalCompra',
+            'descuentoCompra',
             'idProducto',
             'idCliente'
         )
