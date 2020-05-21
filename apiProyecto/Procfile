@@ -1,0 +1,1 @@
+web: gunicorn apiProyecto.wsgi --log-file -
