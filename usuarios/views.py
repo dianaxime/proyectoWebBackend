@@ -23,6 +23,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
                 'instance': {
                     'retrieve': 'usuarios.view_usuario',
                     'partial_update': 'usuarios.change_usuario',
+                    'mi_tipo': 'usuarios.view_usuario',
                 }
             }
         ),
@@ -34,3 +35,8 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         assign_perm('usuarios.change_usuario', user, usuario)
         assign_perm('usuarios.view_usuario', user, usuario)
         return Response(serializer.data)
+
+    @action(detail=True, url_path="mi-tipo", methods=['get'])
+    def mi_tipo(self, request, pk=None):
+        usuario = self.get_object()
+        return Response({'tipo': usuario.tipo})
