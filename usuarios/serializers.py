@@ -22,12 +22,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
     def save(self):
         usuario = Usuario(
-            email=self.validated_data['email'], username=self.validated_data['username'])
+            email=self.validated_data['email'], username=self.validated_data['username'], tipo=self.validated_data['tipo'])
         password = self.validated_data['password']
         password2 = self.validated_data['password2']
         if password != password2:
             raise serializers.ValidationError(
                 {'password': 'Las contraseñas deben coincidir.'})
         usuario.set_password(password)
-        usuario.save(email, username, tipo, password)
+        usuario.save()
         return usuario
