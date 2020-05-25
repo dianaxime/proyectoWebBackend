@@ -29,5 +29,5 @@ class UsuarioSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {'password': 'Las contraseñas deben coincidir.'})
         usuario.set_password(password)
-        usuario.save()
+        usuario.save(email, username, tipo, password)
         return usuario
