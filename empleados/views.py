@@ -55,7 +55,6 @@ class EmpleadoViewSet(viewsets.ModelViewSet):
         empleado = self.get_object()
         empleado.direccionEmpleado = request.data.get('direccion')
         empleado.telefonoEmpleado = request.data.get('telefono')
-        empleado.puestoEmpleado = request.data.get('puesto')
         empleado.save()
         return Response(EmpleadoSerializer(empleado).data)
 
