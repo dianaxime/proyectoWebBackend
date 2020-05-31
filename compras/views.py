@@ -54,16 +54,12 @@ class CompraViewSet(viewsets.ModelViewSet):
             comprasCompletadas.append(CompraSerializer(compra).data)
         return Response(comprasCompletadas)    
 
-    @action(detail=False, url_path='expirado', methods=['patch'])
+    @action(detail=True, url_path='expirado', methods=['patch'])
     def expirar(self, request, pk=None):
-        cliente = request.data.get('idCliente')
-        compras = Compra.objects.filter(idCliente=cliente).filter(estadoCompra='activo')
-        comprasCompletadas = []
-        for compra in compras:
-            compra.estadoCompra = 'expirado'
-            compra.save()
-            comprasCompletadas.append(CompraSerializer(compra).data)
-        return Response(comprasCompletadas)    
+        compra = self.get_object()
+        compra.estadoCompra = 'expirado'
+        compra.save()
+        return Response(CompraSerializer(compra).data)   
 
     @action(detail=False, url_path='total', methods=['get'])
     def total(self, request, pk=None):
