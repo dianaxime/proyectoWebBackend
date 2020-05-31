@@ -19,6 +19,7 @@ class TiendaViewSet(viewsets.ModelViewSet):
             permission_configuration={
                 'base': {
                     'create': True,
+                    'list': lambda user, req: user.is_authenticated,
                 },
                 'instance': {
                     # 'retrieve': 'tiendas.change_tienda',
