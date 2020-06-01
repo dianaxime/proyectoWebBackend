@@ -60,5 +60,5 @@ class ListaViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, url_path='obtener-listas', methods=['get'])
     def obtener_listas(self, request, pk=None):
-        return Response(ListaSerializer(lista).data for lista in Lista.objects.filter(fechaLista=date.today()))
+        return Response(ListaSerializer(lista).data for lista in Lista.objects.filter(fechaLista=(date.today().strftime("%Y-%m-%d"))))
 
