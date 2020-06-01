@@ -61,7 +61,7 @@ class CompraViewSet(viewsets.ModelViewSet):
         compra.save()
         return Response(CompraSerializer(compra).data)   
 
-    @action(detail=False, url_path='total', methods=['get'])
+    @action(detail=False, url_path='total', methods=['patch'])
     def total(self, request, pk=None):
         cliente = request.data.get('idCliente')
         subtotal = Compra.objects.filter(idCliente=cliente).filter(estadoCompra='activo').aggregate(Sum('subtotalCompra'))
