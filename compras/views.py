@@ -27,9 +27,9 @@ class CompraViewSet(viewsets.ModelViewSet):
                 'instance': {
                     'retrieve': 'compras.view_compra',
                     'partial_update': 'compras.change_compra',
-                    'completar': evaluar,
-                    'expirar': evaluar,
-                    'total': evaluar,
+                    'completar': 'compras.change_compra',
+                    'expirar': 'compras.change_compra',
+                    'total': 'compras.change_compra',
                 }
             }
         ),
