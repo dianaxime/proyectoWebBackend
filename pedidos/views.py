@@ -23,12 +23,13 @@ class PedidoViewSet(viewsets.ModelViewSet):
             permission_configuration={
                 'base': {
                     'create': True,
+                    'list': lambda user, req: user.is_authenticated,
                 },
                 'instance': {
                     'retrieve': 'pedidos.view_pedido',
                     #'partial_update': 'pedidos.change_pedido',
-                    'entregar': evaluar,
-                    'cancelar': evaluar,
+                    'confirmado': lambda user, obj, req: user.is_authenticated,
+                    'completado': lambda user, obj, req: user.is_authenticated,
                 }
             }
         ),
@@ -42,24 +43,26 @@ class PedidoViewSet(viewsets.ModelViewSet):
         user.save()
         return Response(serializer.data)
 
-    @action(detail=False, url_path='entregado', methods=['patch'])
+    @action(detail=False, url_path='confirmado', methods=['patch'])
     def entregar(self, request, pk=None):
         cliente = request.data.get('idCliente')
+        empleado = request.data.get('idEmpleado')
         pedidos = Pedido.objects.filter(idCliente=cliente).filter(estadoPedido='pendiente')
         pedidosEntregados = []
         for pedido in pedidos:
-            pedido.estadoPedido = 'entregado'
+            pedido.estadoPedido = 'confirmado'
+            pedido.idEmpleado = empleado
             pedido.save()
             pedidosEntregados.append(PedidoSerializer(pedido).data)
         return Response(pedidosEntregados) 
 
-    @action(detail=False, url_path='cancelado', methods=['patch'])
+    @action(detail=False, url_path='completado', methods=['patch'])
     def cancelar(self, request, pk=None):
         cliente = request.data.get('idCliente')
         pedidos = Pedido.objects.filter(idCliente=cliente).filter(entregaPedido='pendiente')
         pedidosCancelados = []
         for pedido in pedidos:
-            pedido.entregaPedido = 'cancelado'
+            pedido.entregaPedido = 'completado'
             pedido.save()
             pedidosCancelados.append(PedidoSerializer(pedido).data)
         return Response(pedidosCancelados) 
