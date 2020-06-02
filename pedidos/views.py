@@ -28,8 +28,8 @@ class PedidoViewSet(viewsets.ModelViewSet):
                 'instance': {
                     'retrieve': 'pedidos.view_pedido',
                     #'partial_update': 'pedidos.change_pedido',
-                    'confirmado': lambda user, obj, req: user.is_authenticated,
-                    'completado': lambda user, obj, req: user.is_authenticated,
+                    'confirmar': lambda user, obj, req: user.is_authenticated,
+                    'completar': lambda user, obj, req: user.is_authenticated,
                 }
             }
         ),
@@ -43,26 +43,18 @@ class PedidoViewSet(viewsets.ModelViewSet):
         user.save()
         return Response(serializer.data)
 
-    @action(detail=False, url_path='confirmado', methods=['patch'])
-    def entregar(self, request, pk=None):
-        cliente = request.data.get('idCliente')
+    @action(detail=True, url_path='confirmado', methods=['patch'])
+    def confirmar(self, request, pk=None):
+        pedido = self.get_object()
         empleado = request.data.get('idEmpleado')
-        pedidos = Pedido.objects.filter(idCliente=cliente).filter(estadoPedido='pendiente')
-        pedidosEntregados = []
-        for pedido in pedidos:
-            pedido.estadoPedido = 'confirmado'
-            pedido.idEmpleado = empleado
-            pedido.save()
-            pedidosEntregados.append(PedidoSerializer(pedido).data)
-        return Response(pedidosEntregados) 
+        pedido.estadoPedido = 'confirmado'
+        pedido.idEmpleado = empleado
+        pedido.save()
+        return Response(PedidoSerializer(pedido).data)
 
-    @action(detail=False, url_path='completado', methods=['patch'])
-    def cancelar(self, request, pk=None):
-        cliente = request.data.get('idCliente')
-        pedidos = Pedido.objects.filter(idCliente=cliente).filter(entregaPedido='pendiente')
-        pedidosCancelados = []
-        for pedido in pedidos:
-            pedido.entregaPedido = 'completado'
-            pedido.save()
-            pedidosCancelados.append(PedidoSerializer(pedido).data)
-        return Response(pedidosCancelados) 
+    @action(detail=True, url_path='completado', methods=['patch'])
+    def completar(self, request, pk=None):
+        pedido = self.get_object()
+        pedido.entregaPedido = 'completado'
+        pedido.save()
+        return Response(PedidoSerializer(pedido).data) 
