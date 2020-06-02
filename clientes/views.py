@@ -71,5 +71,5 @@ class ClienteViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, url_path="mis-facturas", methods=['get'])
     def mis_facturas(self, request, pk=None):
-        factura = self.get_object()
+        cliente = self.get_object()
         return Response([FacturaSerializer(factura).data for factura in Factura.objects.filter(idCliente=cliente)])
