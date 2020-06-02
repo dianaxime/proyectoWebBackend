@@ -16,8 +16,8 @@ class Pedido(models.Model):
     idEmpleado = models.ForeignKey(
         'empleados.Empleado',
         on_delete = models.CASCADE,
-        null = False,
-        blank = False
+        null = True,
+        blank = True
     )
     idCliente = models.ForeignKey(
         'clientes.Cliente',
