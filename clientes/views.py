@@ -33,11 +33,11 @@ class ClienteViewSet(viewsets.ModelViewSet):
                     'retrieve': 'clientes.view_cliente',
                     # 'partial_update': 'clientes.change_cliente',
                     #'retrieve': evaluar,
-                    'partial_update': evaluar,
-                    'modificar_cliente': evaluar,
-                    'mis_pedidos': evaluar,
-                    'mis_compras': evaluar,
-                    'mis_facturas': evaluar,
+                    'partial_update': 'clientes.view_cliente',
+                    'modificar_cliente': 'clientes.view_cliente',
+                    'mis_pedidos': 'clientes.view_cliente',
+                    'mis_compras': 'clientes.view_cliente',
+                    'mis_facturas': 'clientes.view_cliente',
                 }
             }
         ),
