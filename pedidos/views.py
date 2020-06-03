@@ -48,7 +48,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
         pedido = self.get_object()
         empleado = request.data.get('idEmpleado')
         pedido.estadoPedido = 'confirmado'
-        pedido.idEmpleado = empleado
+        pedido.idEmpleado = int(empleado)
         pedido.save()
         return Response(PedidoSerializer(pedido).data)
 
