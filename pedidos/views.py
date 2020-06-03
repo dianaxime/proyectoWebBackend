@@ -11,6 +11,9 @@ from permisos.services import APIPermissionClassFactory
 from pedidos.models import Pedido
 from pedidos.serializers import PedidoSerializer
 
+from empleados.models import Empleado
+from empleados.serializers import EmpleadoSerializer
+
 def evaluar(user, obj, request):
     return user.id == obj.idEmpleado.idUsuario
 
@@ -48,7 +51,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
         pedido = self.get_object()
         empleado = request.data.get('idEmpleado')
         pedido.estadoPedido = 'confirmado'
-        pedido.idEmpleado = int(empleado)
+        pedido.idEmpleado = Empleado.objects.get(pk=empleado)
         pedido.save()
         return Response(PedidoSerializer(pedido).data)
 
