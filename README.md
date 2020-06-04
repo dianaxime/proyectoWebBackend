@@ -5,12 +5,12 @@ Proyecto de Sistemas y Tecnologías Web (Backend)
 2. Crear virtual environment py -m venv env
 3. Activar virtual environment .\venv\Scripts\activate
 
-# LocalHost
+## LocalHost
 
 pip install -r requirements
 python manage.py migrate
 python manage.py runserver
 
-# Heroku
+## Heroku
 
 heroku ps:scale web=1
